@@ -24,7 +24,6 @@ const config: NextAuthConfig = {
         //     clientSecret: process.env.APPLE_SECRET!,
         //   }),
     ],
-    basePath: "/api/auth",
     secret: process.env.AUTH_SECRET!,
     // 以下、callbacksは認証フロー中に実行されるカスタムロジックを定義する
     callbacks: {
