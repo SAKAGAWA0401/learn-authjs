@@ -1,6 +1,7 @@
 import NextAuth, { NextAuthConfig } from "next-auth"; // imrport the named export
 import GoogleProvider from "next-auth/providers/google"; // import the default export
 import GitHubProvider from "next-auth/providers/github";
+import LineProvider from "next-auth/providers/line";
 // import TwitterProvider from "next-auth/providers/twitter";
 // import AppleProvider from "next-auth/providers/apple";
 
@@ -14,7 +15,11 @@ const config: NextAuthConfig = {
         GitHubProvider({
             clientId: process.env.GITHUB_ID!,
             clientSecret: process.env.GITHUB_SECRET!,
-          }),
+        }),
+        LineProvider({
+            clientId: process.env.LINE_CLIENT_ID!,
+            clientSecret: process.env.LINE_CLIENT_SECRET!,
+        }),
         // TwitterProvider({
         //     clientId: process.env.TWITTER_ID!,
         //     clientSecret: process.env.TWITTER_SECRET!,
