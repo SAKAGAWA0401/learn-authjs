@@ -39,10 +39,10 @@ const config: NextAuthConfig = {
                 console.log(error);
             }
         },
-        redirect({url, baseUrl}) {
-            if (url.startsWith("/")) return `${baseUrl}${url}`;
-            return baseUrl;
-        },
+        // redirect({url, baseUrl}) {
+        //     if (url.startsWith("/")) return `${baseUrl}${url}`;
+        //     return baseUrl;
+        // },
         // jwt({token, trigger, session}) {
         //     if (trigger === "update") {
         //         token.name = session.user.name;
