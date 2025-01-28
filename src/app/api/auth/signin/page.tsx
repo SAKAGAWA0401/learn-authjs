@@ -5,10 +5,10 @@ import Image from "next/image";
 import { useState } from "react";
 
 const providers = [
-  { id: "google", name: "Google", logo: "/img/google.svg" },
-  { id: "apple", name: "Apple", logo: "/img/apple.svg" },
-  { id: "github", name: "GitHub", logo: "/img/github.svg" },
-  { id: "line", name: "LINE", logo: "/img/line.svg" },
+  { id: "google", name: "Google", logo: "/google.svg" },
+  { id: "apple", name: "Apple", logo: "/apple.svg" },
+  { id: "github", name: "GitHub", logo: "/github.svg" },
+  { id: "line", name: "LINE", logo: "/line.svg" },
 ];
 //データURL：https://authjs.dev/img/providers/google.svg
 
@@ -65,7 +65,7 @@ export default function SignInPage() {
               <li>退会や問い合わせ時などの連絡のため</li>
             </ul>
             <p className="mt-2 text-red-500 text-center font-bold">
-              再度ボタンを押すとログインが開始されます。
+              再度Sign inボタンを押すとログインが開始されます。
             </p>
           </div>
         )}
