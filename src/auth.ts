@@ -1,9 +1,9 @@
 import NextAuth, { NextAuthConfig } from "next-auth"; // imrport the named export
 import GoogleProvider from "next-auth/providers/google"; // import the default export
+import AppleProvider from "next-auth/providers/apple";
 import GitHubProvider from "next-auth/providers/github";
 import LineProvider from "next-auth/providers/line";
 // import TwitterProvider from "next-auth/providers/twitter";
-// import AppleProvider from "next-auth/providers/apple";
 
 // ": NextAuthConfig"でtypescriptのNextAuthConfig型を指定する
 const config: NextAuthConfig = {
@@ -11,6 +11,10 @@ const config: NextAuthConfig = {
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!, // "!" はTypeScript に「この値は undefined ではない」と保証する
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        }),
+        AppleProvider({
+            clientId: process.env.APPLE_ID!,
+            clientSecret: process.env.APPLE_SECRET!,
         }),
         GitHubProvider({
             clientId: process.env.GITHUB_ID!,
@@ -24,12 +28,11 @@ const config: NextAuthConfig = {
         //     clientId: process.env.TWITTER_ID!,
         //     clientSecret: process.env.TWITTER_SECRET!,
         //   }),
-        // AppleProvider({
-        //     clientId: process.env.APPLE_ID!,
-        //     clientSecret: process.env.APPLE_SECRET!,
-        //   }),
     ],
     secret: process.env.AUTH_SECRET!,
+    pages: {
+        signIn: "/auth/signin", // カスタムSignInページを指定
+    },
     // 以下、callbacksは認証フロー中に実行されるカスタムロジックを定義する
     callbacks: {
         // 以下、reqが認証されたユーザによるものかを判断するmiddlewareを使ってreqを処理する際に利用される
