@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/header";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,6 +15,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Google tag (gtag.js) */}
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-4W1WWMX2NN" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-4W1WWMX2NN');
+        `}
+        </Script>
+      </head>
       <body className="min-h-screen bg-gray-50">
         <Header />
         <main className="container mx-auto mt-4">{children}</main>
