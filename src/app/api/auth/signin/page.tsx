@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 const providers = [
   { id: "google", name: "Google", logo: "/google.svg" },
@@ -15,6 +16,17 @@ const providers = [
 export default function SignInPage() {
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const searchParams = useSearchParams();
+  const errorCode = searchParams.get("error");
+
+  // エラーコードに応じたエラーメッセージを定義
+  const errorMessageMap: Record<string, string> = {
+    EmailAlreadyRegistered: "このメールアドレスは他のプロバイダーで既に登録されています。",
+    NoEmailProvided: "メールアドレスが取得できませんでした。",
+    DatabaseError: "データベースエラーが発生しました。後ほど再度お試しください。",
+  };
+
+  const errorMessage = errorCode ? errorMessageMap[errorCode] || "不明なエラーが発生しました。" : null;
 
   const handleSignIn = (providerId: string) => {
     if (selectedProvider === providerId && isConfirmed) {
@@ -33,6 +45,13 @@ export default function SignInPage() {
         <h1 className="text-lg font-semibold text-center mb-4">
           Sign in to your account
         </h1>
+
+        {/* エラーメッセージの表示 */}
+        {errorMessage && (
+          <div className="mb-4 p-3 border border-red-500 rounded bg-red-100 text-red-700">
+            {errorMessage}
+          </div>
+        )}
 
         {providers.map((provider) => (
           <button

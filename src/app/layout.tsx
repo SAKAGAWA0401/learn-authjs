@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/header";
 import Script from "next/script";
+import PageViewTrackerWrapper from '@/components/PageViewTrackerWrapper';
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -29,7 +30,10 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-gray-50">
         <Header />
-        <main className="container mx-auto mt-4">{children}</main>
+        <main className="container mx-auto mt-4">
+          <PageViewTrackerWrapper />
+          {children}
+        </main>
       </body>
     </html>
   );

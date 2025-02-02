@@ -3,6 +3,7 @@ import GoogleProvider from "next-auth/providers/google"; // import the default e
 import AppleProvider from "next-auth/providers/apple";
 import GitHubProvider from "next-auth/providers/github";
 import LineProvider from "next-auth/providers/line";
+import { sql } from "./lib/db";
 // import TwitterProvider from "next-auth/providers/twitter";
 
 // ": NextAuthConfig"でtypescriptのNextAuthConfig型を指定する
@@ -47,16 +48,91 @@ const config: NextAuthConfig = {
                 console.log(error);
             }
         },
-        // redirect({url, baseUrl}) {
-        //     if (url.startsWith("/")) return `${baseUrl}${url}`;
-        //     return baseUrl;
-        // },
-        // jwt({token, trigger, session}) {
-        //     if (trigger === "update") {
-        //         token.name = session.user.name;
-        //     }
-        //     return token;
-        // },
+        async jwt({ token, account, profile }) {
+            if (account) {
+                // provider: account.provider (例: "google", "apple", etc.)
+                token.provider = account.provider;
+                // providerごとのユーザIDはプロバイダーごとに名称が異なるので、profile から適切な値を抽出
+                // Google / Apple: profile.sub, GitHub: profile.id, LINE: profile.userId
+                token.userIdByProvider = profile?.sub || profile?.id || null;
+                // 名前、メール、画像は provider によりフィールド名が異なる場合があるので、以下は一例です
+                token.name = profile?.name || token.name || null;
+                token.email = profile?.email || token.email || null;
+                token.image = profile?.picture || profile?.avatar_url || null;
+            }
+            return token;
+        },
+          // セッション生成時に、JWT トークンから共通項目をセッションオブジェクトへ反映する
+        async session({ session, token }) {
+            session.user = {
+                // 各項目を統一スキーマにマッピング
+                provider: token.provider as string,
+                userIdByProvider: token.userIdByProvider as string | null,
+                name: token.name as string | null,
+                email: token.email as string | null,
+                image: token.image as string | null,
+            };
+            return session;
+        },
+        // ここで signIn コールバックを利用して、認証前にメールの重複をチェック
+        async signIn({ account, profile }) {
+            // account または profile からメールアドレスを取得
+            const email = profile?.email;
+            if (!email) {
+                // メールアドレスが取得できなければ、認証を拒否する（またはエラーメッセージを設定）
+                //return false;
+                return "/auth/signin?error=NoEmailProvided";
+            }
+    
+            try {
+                // 指定されたメールアドレスで既にユーザが登録されているかチェック
+                const existingUsers = await sql`
+                    SELECT provider FROM users WHERE email = ${email}
+                `;
+                if (existingUsers.length > 0) {
+                    // 既に登録されている場合、異なる provider で登録されているなら認証拒否
+                    // （同じ provider であればログインとみなす）
+                    if (existingUsers[0].provider !== account?.provider) {
+                    // ここでエラーメッセージを返すなどしてユーザに通知する仕組みを用意すると良い
+                    // return false;
+                    return "/auth/signin?error=EmailAlreadyRegistered";
+                    }
+                }
+                // 登録がなければ、認証プロセスを継続
+                return true;
+            } catch (error) {
+                console.error("Error checking existing user by email:", error);
+                //return false;
+                return "/auth/signin?error=DatabaseError";
+            }
+        },        
+    },
+    // サインイン完了時のイベントでユーザ登録処理を実施
+    events: {
+        async signIn({ account, profile }) {
+            // ここでは、session.user に設定される情報と同様の統一スキーマを利用
+            const provider = account?.provider;
+            const userIdByProvider = profile?.sub || profile?.id || null;
+            const name = profile?.name || null;
+            const email = profile?.email || null;
+            const image = profile?.picture || profile?.avatar_url || null;
+
+            try {
+                // UPSET（存在すれば更新、なければ挿入）クエリの例
+                await sql`
+                INSERT INTO users (provider, user_id_by_provider, name, email, image)
+                VALUES (${provider}, ${userIdByProvider}, ${name}, ${email}, ${image})
+                ON CONFLICT (provider, user_id_by_provider)
+                DO UPDATE SET
+                    name = EXCLUDED.name,
+                    email = EXCLUDED.email,
+                    image = EXCLUDED.image,
+                    updated_at = CURRENT_TIMESTAMP
+                `;
+            } catch (error) {
+                console.error("Error registering user:", error);
+            }
+        },
     },
 };
 
