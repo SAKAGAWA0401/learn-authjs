@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'; // キャッシュを無効化する設定>req毎に情報取得
+
 import { SignInButton } from "@/components/SignInButton";
 import { SignOutButton } from "@/components/SignOutButton";
 import { auth } from "@/auth";
