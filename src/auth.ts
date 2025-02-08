@@ -134,23 +134,24 @@ const config: NextAuthConfig = {
             }
         },
     },
-    // クッキーのカスタマイズ設定→SSO向けのトップドメインへの設定
-    cookies: {
-        sessionToken: {
-            name: "__Secure-authjs.session-token",
-            options: {
-                // ドメイン属性の設定
-                domain: ".sloperiver.com",
-                path: "/",
-                // HTTPSを前提とする場合
-                secure: true,
-                httpOnly: true,
-                // 必要に応じたSameSite属性の設定
-                sameSite: "lax"
-            }
-        }
-        // 他にも必要なクッキー設定があれば記載可能
-    },
+    // top domain cookieは上手くいかないためコメントアウト
+    // cookieのカスタマイズ設定→SSO向けのトップドメインへの設定
+    // cookies: {
+    //     sessionToken: {
+    //         name: "__Secure-authjs.session-token",
+    //         options: {
+    //             // ドメイン属性の設定
+    //             domain: ".sloperiver.com",
+    //             path: "/",
+    //             // HTTPSを前提とする場合
+    //             secure: true,
+    //             httpOnly: true,
+    //             // 必要に応じたSameSite属性の設定
+    //             sameSite: "lax"
+    //         }
+    //     }
+    //     // 他にも必要なクッキー設定があれば記載可能
+    // },
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);
