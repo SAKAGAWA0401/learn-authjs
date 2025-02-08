@@ -10,8 +10,8 @@ export function SignOutButton() {
         try {
             const res = await fetch("/api/auth/signout", { method: "POST" });
             if (res.ok) {
+                router.refresh();
                 router.push("/");
-                console.error("Sign out successed:", res.status);
             } else {
                 console.error("Sign out failed:", res.status);
             }
