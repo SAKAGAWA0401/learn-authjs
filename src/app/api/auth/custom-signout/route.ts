@@ -1,11 +1,12 @@
-// pages/api/auth/custom-signout.ts
-import type { NextApiRequest, NextApiResponse } from "next";
+// app/api/auth/custom-signout/route.ts
+import { NextResponse } from "next/server";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  // NextAuth が発行するセッショントークンの cookie 名を確認してください
-  // 例: "next-auth.session-token" または "__Secure-next-auth.session-token"
-  res.setHeader("Set-Cookie", [
+export async function POST() {
+  const response = NextResponse.json({ message: "Signed out" });
+  // クッキーを削除するための Set-Cookie ヘッダーを設定
+  response.headers.set(
+    "Set-Cookie",
     `__Secure-next-auth.session-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Lax`
-  ]);
-  res.status(200).json({ message: "Signed out" });
+  );
+  return response;
 }
