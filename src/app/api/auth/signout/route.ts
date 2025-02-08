@@ -4,6 +4,7 @@ import { signOut } from "@/auth"; // これはサーバー専用のモジュー�
 
 export async function POST() {
     // auth モジュールのサインアウト処理を実行（サーバー専用なので安全に利用できる）
+    "use server";
     await signOut({ redirect: false });
 
     // サインアウト時にクッキーを削除するためのレスポンスを作成
