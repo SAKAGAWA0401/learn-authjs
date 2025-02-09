@@ -6,6 +6,16 @@ import LineProvider from "next-auth/providers/line";
 import { sql } from "./lib/db";
 // import TwitterProvider from "next-auth/providers/twitter";
 
+interface AppleUser {
+    name?: {
+      firstName?: string;
+      lastName?: string;
+    };
+}
+interface AppleProfile extends Record<string, any> {
+    user?: AppleUser;
+}
+
 // ": NextAuthConfig"でtypescriptのNextAuthConfig型を指定する
 const config: NextAuthConfig = {
     providers: [
@@ -24,6 +34,7 @@ const config: NextAuthConfig = {
         LineProvider({
             clientId: process.env.LINE_CLIENT_ID!,
             clientSecret: process.env.LINE_CLIENT_SECRET!,
+            checks: ["state"], // ← これを明示してみる
         }),
         // TwitterProvider({
         //     clientId: process.env.TWITTER_ID!,
@@ -113,7 +124,17 @@ const config: NextAuthConfig = {
             // ここでは、session.user に設定される情報と同様の統一スキーマを利用
             const provider = account?.provider;
             const userIdByProvider = profile?.sub || profile?.id || null;
-            const name = profile?.name || null;
+            // まずは他のプロバイダーが返す可能性のある top-level name を取得
+            let name = profile?.name ?? null;
+            if (!name && provider === "apple") {
+                const appleProfile = profile as AppleProfile;
+                const firstName = appleProfile.user?.name?.firstName ?? null;
+                const lastName = appleProfile.user?.name?.lastName ?? null;
+                const fullName =
+                    firstName && lastName
+                    ? `${firstName} ${lastName}`
+                    : firstName || lastName; // いずれかのみ存在するケースも考慮
+            };
             const email = profile?.email || null;
             const image = profile?.picture || profile?.avatar_url || null;
 
