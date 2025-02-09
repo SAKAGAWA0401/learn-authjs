@@ -3,14 +3,13 @@
 import { useState } from "react";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
-import { SignInButton } from "@/components/SignInButton";
 
 // API から JSON を取得する fetcher 関数
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function UserAuthClient() {
   const router = useRouter();
-  const { data, error, mutate } = useSWR("/api/auth/status", fetcher, {
+  const { data, error, mutate } = useSWR("/api/auth-status", fetcher, {
     refreshInterval: 0,
   });
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -24,7 +23,9 @@ export function UserAuthClient() {
   if (!session || !session.user) {
     return (
       <div>
-        <SignInButton />
+        <a href="/api/auth/signin" className="text-blue-600 hover:underline">
+          Sign In
+        </a>
       </div>
     );
   }
