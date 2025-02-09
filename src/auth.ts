@@ -16,13 +16,6 @@ const config: NextAuthConfig = {
         AppleProvider({
             clientId: process.env.APPLE_CLIENT_ID!,
             clientSecret: process.env.APPLE_SECRET!,
-            authorization: {
-                // 追加パラメータを指定
-                params: {
-                  scope: "name email",
-                  response_mode: "query",
-                },
-            },
         }),
         GitHubProvider({
             clientId: process.env.GITHUB_ID!,
