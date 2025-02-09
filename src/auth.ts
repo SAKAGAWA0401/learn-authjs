@@ -158,6 +158,7 @@ const config: NextAuthConfig = {
     //     }
     //     // 他にも必要なクッキー設定があれば記載可能
     // },
+    debug: true,
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);
