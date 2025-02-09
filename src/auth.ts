@@ -15,13 +15,7 @@ const config: NextAuthConfig = {
         }),
         AppleProvider({
             clientId: process.env.APPLE_ID!,
-            clientSecret: JSON.stringify({
-                clientId: process.env.APPLE_CLIENT_ID,
-                teamId: process.env.APPLE_TEAM_ID,      // Apple Developer Portal の Team ID
-                keyId: process.env.APPLE_KEY_ID,        // Apple Developer Portal で発行した Key ID
-                // 環境変数から取得した秘密鍵の改行を復元
-                privateKey: process.env.APPLE_SECRET!,
-            })
+            clientSecret: process.env.APPLE_SECRET!,
         }),
         GitHubProvider({
             clientId: process.env.GITHUB_ID!,
