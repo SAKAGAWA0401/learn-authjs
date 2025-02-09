@@ -15,7 +15,7 @@ const config: NextAuthConfig = {
         }),
         AppleProvider({
             clientId: process.env.APPLE_ID!,
-            clientSecret: process.env.APPLE_SECRET!,
+            clientSecret: process.env.APPLE_SECRET!.replace(/\\n/g, "\n"),
         }),
         GitHubProvider({
             clientId: process.env.GITHUB_ID!,
