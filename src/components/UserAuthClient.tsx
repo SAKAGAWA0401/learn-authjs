@@ -49,18 +49,18 @@ export function UserAuthClient() {
 
   return (
     <div className="relative inline-block">
-      {/* マウスオーバーまたはクリックでドロップダウン表示 */}
       <div
-        onMouseEnter={() => setDropdownVisible(true)}
-        onMouseLeave={() => setDropdownVisible(false)}
         onClick={() => setDropdownVisible((prev) => !prev)}
         className="cursor-pointer select-none"
       >
         <span className="text-gray-800">{session.user.email}</span>
       </div>
-
+  
       {dropdownVisible && (
-        <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-lg z-10">
+        <div 
+          className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-lg z-10"
+          onMouseLeave={() => setDropdownVisible(false)}
+        >
           <button
             onClick={handleSignOut}
             className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
