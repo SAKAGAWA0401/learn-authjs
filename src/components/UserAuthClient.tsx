@@ -9,7 +9,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function UserAuthClient() {
   const router = useRouter();
-  const { data, error, mutate } = useSWR("/api/auth-status", fetcher, {
+  const { data, error, mutate } = useSWR("/api/auth/status", fetcher, {
     refreshInterval: 0,
   });
   const [dropdownVisible, setDropdownVisible] = useState(false);
